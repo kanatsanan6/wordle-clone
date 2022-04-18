@@ -26,27 +26,26 @@ function Board() {
   let [result, setResult] = useState(initialResult);
   let [answer, setAnswer] = useState("");
 
+  /* Random Word Generator */
   const randomAnswer = () => {
     const totalAlp = Object.keys(wordList).length; // length of wordList
     const randomAlp = Math.floor(Math.random() * totalAlp); // random an alphabet
     const totalAnswer = wordList[Object.keys(wordList)[randomAlp]].length; // length of wordList[totalAlp]
     const randomIndex = Math.floor(Math.random() * totalAnswer);
-    const randomAnswer =
-      wordList[Object.keys(wordList)[randomAlp]][randomIndex];
+    const randomAnswer = wordList[Object.keys(wordList)[randomAlp]][randomIndex];
     setAnswer((answer = randomAnswer.toUpperCase()));
   };
 
+  /* Judgement Function */
   const judgement = (word) => {
-    // Does word exist?
-    const wordExist = wordList[word[0].toLowerCase()].includes(
-      word.join("").toLowerCase()
-    );
-    /* not exist */
-    if (wordExist === "false") {
+    const wordExist = wordList[word[0].toLowerCase()].includes(word.join("").toLowerCase()); // Check if word is in the List
+    if (wordExist === false) {
+      /* not exist */
       return -1;
     } else {
       /* exist */
       const result = [];
+      /* Letter position judgement */
       for (let index = 0; index < 5; index++) {
         const letterExist = answer.includes(word[index]);
         if (letterExist && word[index] === answer[index]) {
@@ -57,11 +56,11 @@ function Board() {
           result.push("gray");
         }
       }
-      return result;
+      return result; // return result as an array of 5 letter status
     }
   };
 
-  // handle input from keyboard
+  /* handle input from keyboard */
   const handleKeyInput = (event) => {
     let enterLoop = false;
     loop1: for (let row = 0; row < 6; row++) {
@@ -69,11 +68,7 @@ function Board() {
         if (board[row][col] === "") {
           enterLoop = true;
           // Alphabet: Add a letter to the board
-          if (
-            event.key.match(/[a-z]/i) &&
-            event.key.length === 1 &&
-            numLetter < 5
-          ) {
+          if (event.key.match(/[a-z]/i) && event.key.length === 1 && numLetter < 5) {
             setNumLetter((numLetter += 1));
             const newBoard = [...board];
             newBoard[row][col] = event.key.toUpperCase();
@@ -92,7 +87,7 @@ function Board() {
             setNumLetter((numLetter -= 1));
             break loop1;
           }
-          // Enter: Judgement creteria
+          // Enter: Go to Judgement creteria
           else if (event.key === "Enter" && numLetter === 5) {
             const judgementResult = judgement(board[row - 1]);
             if (judgementResult !== -1) {
@@ -108,7 +103,7 @@ function Board() {
         }
       }
     }
-
+    // handle enter and backspace for the last attempt
     if (enterLoop === false) {
       if (event.key === "Backspace" && numLetter > 0) {
         const newBoard = [...board];
@@ -128,13 +123,15 @@ function Board() {
       }
     }
   };
+
+  /* Execute Random Answer Generator only once component did moute */
   useEffect(() => {
     randomAnswer();
     console.log(`Answer: ${answer}`);
   }, []);
 
+  /* Listen to keyboard input */
   useEffect(() => {
-    // listen to keyboard input
     window.addEventListener("keydown", handleKeyInput);
     return () => {
       window.removeEventListener("keydown", handleKeyInput);

@@ -5,6 +5,9 @@
   flex-wrap: wrap;
   margin: auto auto; /* center board*/
   margin-top: 100px;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 100px;
 }
 .board:focus {
   outline: none;
@@ -15,8 +18,6 @@
   border: 2px solid #d3d6da;
   width: 60px;
   height: 60px;
-  margin-left: 2px;
-  margin-right: 4px;
   display: flex; /* Center text */
   justify-content: center;
   align-items: center;
@@ -24,6 +25,17 @@
 
 .board__letterExist {
   border: 2px solid #878a8c !important;
+  animation-name: popOut;
+  animation-duration: 0.1s;
+}
+/* Pop out Animation */
+@keyframes popOut {
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .board__letterContainer > h1 {

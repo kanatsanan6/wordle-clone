@@ -1,5 +1,6 @@
 import "./App.css";
 import Board from "./Board";
+import Keyboard from "./Keyboard";
 
 function App() {
   return (
@@ -9,8 +10,8 @@ function App() {
       <hr />
       {/* Board */}
       <Board />
-
       {/* Keyboard */}
+      <Keyboard />
     </div>
   );
 }
