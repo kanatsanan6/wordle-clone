@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Board.css";
+import { useStateValue } from "./StateProvider/StateProvider";
 import wordList from "./word/word.json";
 
 function Board() {
@@ -25,6 +26,15 @@ function Board() {
   let [numLetter, setNumLetter] = useState(initialNumLetter);
   let [result, setResult] = useState(initialResult);
   let [answer, setAnswer] = useState("");
+
+  /* State Provider */
+  const [buttonInput, dispatch] = useStateValue();
+
+  const clear_list = () => {
+    dispatch({
+      type: "CLEAR_LIST",
+    });
+  };
 
   /* Random Word Generator */
   const randomAnswer = () => {
@@ -137,6 +147,17 @@ function Board() {
       window.removeEventListener("keydown", handleKeyInput);
     };
   });
+
+  /* Handle the input from button keyboard */
+  useEffect(() => {
+    if (buttonInput.buttonInput.length > 0) {
+      buttonInput.buttonInput.map((item) => {
+        return handleKeyInput(item);
+      });
+      // Clear buttonInput
+      clear_list();
+    }
+  }, [buttonInput]);
 
   return (
     <div className="board">
