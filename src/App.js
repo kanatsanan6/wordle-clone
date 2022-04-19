@@ -15,6 +15,7 @@ function App() {
       <Board className="app__board" />
       {/* Keyboard */}
       <Keyboard />
+      <p>create by Kanatsanan6</p>
     </div>
   );
 }

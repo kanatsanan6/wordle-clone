@@ -1,0 +1,24 @@
+.winmodal {
+  padding-top: 70px;
+  background: rgba(0, 0, 0, 0.473);
+  animation-name: fadeUp;
+  animation-duration: 0.5s;
+}
+
+.winmodal h1 {
+  font-size: 30px !important;
+}
+
+.winmodal h2 {
+  font-size: 18px !important;
+  font-weight: 400 !important;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

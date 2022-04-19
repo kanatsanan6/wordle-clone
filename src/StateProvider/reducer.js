@@ -6,6 +6,7 @@ export const initialState = {
   thirdLineStatus: ["Enter", "", "", "", "", "", "", "", "Backspace"],
   winningStatus: false,
   noWordStatus: [""],
+  resetBoard: false,
 };
 
 // referance keyboard layout
@@ -59,6 +60,21 @@ const reducer = (state, action) => {
       } else {
         return { ...state, noWordStatus: [""] };
       }
+
+    case "RESET_BOARD":
+      return { ...state, resetBoard: true };
+
+    case "RETURN_RESET_BOARD":
+      return {
+        ...state,
+        buttonInput: [],
+        firstLineStatus: ["", "", "", "", "", "", "", "", "", ""],
+        secondLineStatus: ["", "", "", "", "", "", "", "", ""],
+        thirdLineStatus: ["Enter", "", "", "", "", "", "", "", "Backspace"],
+        winningStatus: false,
+        noWordStatus: [""],
+        resetBoard: false,
+      };
 
     default:
       return { state };

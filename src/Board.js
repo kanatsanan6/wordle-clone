@@ -29,7 +29,7 @@ function Board() {
   let [winStatus, setWinStatus] = useState(false);
 
   /* State Provider */
-  const [buttonInput, dispatch] = useStateValue();
+  const [{ buttonInput, resetBoard }, dispatch] = useStateValue();
 
   const clear_list = () => {
     dispatch({
@@ -65,6 +65,12 @@ function Board() {
     });
   };
 
+  const return_reset_board = () => {
+    dispatch({
+      type: "RETURN_RESET_BOARD",
+    });
+  };
+
   /* Random Word Generator */
   const randomAnswer = () => {
     const totalAlp = Object.keys(wordList).length; // length of wordList
@@ -73,6 +79,7 @@ function Board() {
     const randomIndex = Math.floor(Math.random() * totalAnswer);
     const randomAnswer = wordList[Object.keys(wordList)[randomAlp]][randomIndex];
     setAnswer((answer = randomAnswer.toUpperCase()));
+    console.log(`Answer: ${answer}`);
   };
 
   /* Judgement Function */
@@ -176,10 +183,21 @@ function Board() {
     }
   };
 
+  /* Handle Play Again action */
+  useEffect(() => {
+    if (resetBoard) {
+      setBoard(initialBoard);
+      setNumLetter((numLetter = initialNumLetter));
+      setResult(initialResult);
+      setWinStatus(false);
+      randomAnswer();
+      return_reset_board();
+    }
+  }, [resetBoard]);
+
   /* Execute Random Answer Generator only once component did moute */
   useEffect(() => {
     randomAnswer();
-    console.log(`Answer: ${answer}`);
   }, []);
 
   /* Listen to keyboard input */
@@ -192,8 +210,8 @@ function Board() {
 
   /* Handle the input from button keyboard */
   useEffect(() => {
-    if (buttonInput.buttonInput.length > 0) {
-      buttonInput.buttonInput.map((item) => {
+    if (buttonInput.length > 0) {
+      buttonInput.map((item) => {
         return handleKeyInput(item);
       });
       /* Clear buttonInput */
