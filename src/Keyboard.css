@@ -26,3 +26,17 @@
 .backspaceButton {
   width: 100px !important;
 }
+
+.greenStatus {
+  background-color: #6aaa64 !important;
+  color: white !important;
+}
+.yellowStatus {
+  background-color: #c9b458 !important;
+  color: white !important;
+}
+
+.grayStatus {
+  background-color: #787c7e !important;
+  color: white !important;
+}

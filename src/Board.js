@@ -36,6 +36,16 @@ function Board() {
     });
   };
 
+  const send_status = (key, color) => {
+    dispatch({
+      type: "ADD_TO_STATUS",
+      item: {
+        key: key,
+        color: color,
+      },
+    });
+  };
+
   /* Random Word Generator */
   const randomAnswer = () => {
     const totalAlp = Object.keys(wordList).length; // length of wordList
@@ -60,10 +70,13 @@ function Board() {
         const letterExist = answer.includes(word[index]);
         if (letterExist && word[index] === answer[index]) {
           result.push("green");
+          send_status(word[index], "green");
         } else if (letterExist) {
           result.push("yellow");
+          send_status(word[index], "yellow");
         } else {
           result.push("gray");
+          send_status(word[index], "gray");
         }
       }
       return result; // return result as an array of 5 letter status
