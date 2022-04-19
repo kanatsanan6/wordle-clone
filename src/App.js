@@ -1,6 +1,7 @@
 import "./App.css";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
+import Popup from "./Popup";
 
 function App() {
   return (
@@ -8,8 +9,10 @@ function App() {
       {/* Header */}
       <h1>Wordle-Clone</h1>
       <hr />
+      {/* Pop up status */}
+      <Popup className="app__popup" />
       {/* Board */}
-      <Board />
+      <Board className="app__board" />
       {/* Keyboard */}
       <Keyboard />
     </div>

@@ -4,6 +4,8 @@ export const initialState = {
   firstLineStatus: ["", "", "", "", "", "", "", "", "", ""],
   secondLineStatus: ["", "", "", "", "", "", "", "", ""],
   thirdLineStatus: ["Enter", "", "", "", "", "", "", "", "Backspace"],
+  winningStatus: false,
+  noWordStatus: [""],
 };
 
 // referance keyboard layout
@@ -13,7 +15,6 @@ const thirdLine = ["Enter", "Z", "X", "C", "V", "B", "N", "M", "Backspace"];
 
 // Define reducer
 const reducer = (state, action) => {
-  console.log(state);
   switch (action.type) {
     case "ADD_TO_LIST":
       return { ...state, buttonInput: [...state.buttonInput, action.item] };
@@ -41,6 +42,23 @@ const reducer = (state, action) => {
         return { ...state, thirdLineStatus: [...newThirdLineStatus] };
       }
       return { ...state };
+
+    case "WINNING_STATUS":
+      return { ...state, winningStatus: true };
+
+    case "NOWORD_STATUS":
+      const temp = [...state.noWordStatus];
+      temp.push(true);
+      return { ...state, noWordStatus: [...temp] };
+
+    case "RESET_NOWORD_STATUS":
+      const temp2 = [...state.noWordStatus];
+      if (temp2.length > 0) {
+        temp2.pop();
+        return { ...state, noWordStatus: [...temp2] };
+      } else {
+        return { ...state, noWordStatus: [""] };
+      }
 
     default:
       return { state };

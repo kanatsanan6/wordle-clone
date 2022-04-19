@@ -26,6 +26,7 @@ function Board() {
   let [numLetter, setNumLetter] = useState(initialNumLetter);
   let [result, setResult] = useState(initialResult);
   let [answer, setAnswer] = useState("");
+  let [winStatus, setWinStatus] = useState(false);
 
   /* State Provider */
   const [buttonInput, dispatch] = useStateValue();
@@ -46,6 +47,24 @@ function Board() {
     });
   };
 
+  const winning_status = () => {
+    dispatch({
+      type: "WINNING_STATUS",
+    });
+  };
+
+  const noword_status = () => {
+    dispatch({
+      type: "NOWORD_STATUS",
+    });
+  };
+
+  const remove_noword_status = () => {
+    dispatch({
+      type: "RESET_NOWORD_STATUS",
+    });
+  };
+
   /* Random Word Generator */
   const randomAnswer = () => {
     const totalAlp = Object.keys(wordList).length; // length of wordList
@@ -61,6 +80,10 @@ function Board() {
     const wordExist = wordList[word[0].toLowerCase()].includes(word.join("").toLowerCase()); // Check if word is in the List
     if (wordExist === false) {
       /* not exist */
+      noword_status();
+      setTimeout(() => {
+        remove_noword_status();
+      }, 1000);
       return -1;
     } else {
       /* exist */
@@ -79,6 +102,12 @@ function Board() {
           send_status(word[index], "gray");
         }
       }
+
+      if ((result.includes("") || result.includes("yellow") || result.includes("gray")) === false) {
+        setWinStatus((winStatus = true));
+        winning_status();
+      }
+
       return result; // return result as an array of 5 letter status
     }
   };
@@ -86,62 +115,62 @@ function Board() {
   /* handle input from keyboard */
   const handleKeyInput = (event) => {
     let enterLoop = false;
-    loop1: for (let row = 0; row < 6; row++) {
-      for (let col = 0; col < 5; col++) {
-        if (board[row][col] === "") {
-          enterLoop = true;
-          // Alphabet: Add a letter to the board
-          if (event.key.match(/[a-z]/i) && event.key.length === 1 && numLetter < 5) {
-            setNumLetter((numLetter += 1));
-            const newBoard = [...board];
-            newBoard[row][col] = event.key.toUpperCase();
-            setBoard(newBoard);
-            break loop1;
-          }
-          // Backspace: Delete a letter from the board
-          else if (event.key === "Backspace" && numLetter > 0) {
-            const newBoard = [...board];
-            if (col === 0) {
-              newBoard[row - 1][4] = "";
-            } else {
-              newBoard[row][col - 1] = "";
+    if (!winStatus) {
+      loop1: for (let row = 0; row < 6; row++) {
+        for (let col = 0; col < 5; col++) {
+          if (board[row][col] === "") {
+            enterLoop = true;
+            // Alphabet: Add a letter to the board
+            if (event.key.match(/[a-z]/i) && event.key.length === 1 && numLetter < 5) {
+              setNumLetter((numLetter += 1));
+              const newBoard = [...board];
+              newBoard[row][col] = event.key.toUpperCase();
+              setBoard(newBoard);
+              break loop1;
             }
-            setBoard(newBoard);
-            setNumLetter((numLetter -= 1));
-            break loop1;
-          }
-          // Enter: Go to Judgement creteria
-          else if (event.key === "Enter" && numLetter === 5) {
-            const judgementResult = judgement(board[row - 1]);
-            if (judgementResult !== -1) {
-              setNumLetter((numLetter = initialNumLetter));
-              const newResult = [...result];
-              newResult[row - 1] = judgementResult;
-              setResult(newResult);
-            } else {
-              console.log("Word is not existed");
+            // Backspace: Delete a letter from the board
+            else if (event.key === "Backspace" && numLetter > 0) {
+              const newBoard = [...board];
+              if (col === 0) {
+                newBoard[row - 1][4] = "";
+              } else {
+                newBoard[row][col - 1] = "";
+              }
+              setBoard(newBoard);
+              setNumLetter((numLetter -= 1));
+              break loop1;
             }
-            break loop1;
+            // Enter: Go to Judgement creteria
+            else if (event.key === "Enter" && numLetter === 5) {
+              const judgementResult = judgement(board[row - 1]);
+              if (judgementResult !== -1) {
+                setNumLetter((numLetter = initialNumLetter));
+                const newResult = [...result];
+                newResult[row - 1] = judgementResult;
+                setResult(newResult);
+              }
+              break loop1;
+            }
           }
         }
       }
-    }
-    // handle enter and backspace for the last attempt
-    if (enterLoop === false) {
-      if (event.key === "Backspace" && numLetter > 0) {
-        const newBoard = [...board];
-        newBoard[5][4] = "";
-        setBoard(newBoard);
-        setNumLetter((numLetter -= 1));
-      } else if (event.key === "Enter" && numLetter === 5) {
-        const judgementResult = judgement(board[5]);
-        if (judgementResult !== -1) {
-          setNumLetter((numLetter = initialNumLetter));
-          const newResult = [...result];
-          newResult[5] = judgementResult;
-          setResult(newResult);
-        } else {
-          console.log("Word is not existed");
+      // handle enter and backspace for the last attempt
+      if (enterLoop === false) {
+        if (event.key === "Backspace" && numLetter > 0) {
+          const newBoard = [...board];
+          newBoard[5][4] = "";
+          setBoard(newBoard);
+          setNumLetter((numLetter -= 1));
+        } else if (event.key === "Enter" && numLetter === 5) {
+          const judgementResult = judgement(board[5]);
+          if (judgementResult !== -1) {
+            setNumLetter((numLetter = initialNumLetter));
+            const newResult = [...result];
+            newResult[5] = judgementResult;
+            setResult(newResult);
+          } else {
+            console.log("Word is not existed");
+          }
         }
       }
     }
@@ -167,7 +196,7 @@ function Board() {
       buttonInput.buttonInput.map((item) => {
         return handleKeyInput(item);
       });
-      // Clear buttonInput
+      /* Clear buttonInput */
       clear_list();
     }
   }, [buttonInput]);
